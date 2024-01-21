@@ -1,25 +1,49 @@
-import { type TabState, type Todo } from "App";
 import Header from "./header";
 import TodoItem from "./TodoItem";
 import Footer from "./footer";
+import useTodoList from "./useTodoList";
 
-interface TodoProps {
-  todos: Todo[];
-  currentTab: TabState;
-}
+const TodoList = () => {
+  const {
+    state: {
+      completedTodoExists,
+      currentTab,
+      filteredTodos,
+      remainTodosAmount,
+    },
+    action: {
+      addTodo,
+      deleteCompletedTodo,
+      deleteTodo,
+      editTodo,
+      setCurrentTab,
+      toggleTodo,
+      toggleTodoAll,
+    },
+  } = useTodoList();
 
-const TodoList = ({ todos, currentTab }: TodoProps) => {
   return (
     <div className="w-[600px] max-h-[calc(100vh-200px)] flex flex-col bg-white rounded-lg drop-shadow-md">
-      <Header />
+      <Header addTodo={addTodo} toggleTodoAll={toggleTodoAll} />
       <div className="h-full overflow-y-auto">
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <>
-            <TodoItem todo={todo} />
+            <TodoItem
+              todo={todo}
+              toggleTodo={toggleTodo}
+              editTodo={editTodo}
+              deleteTodo={deleteTodo}
+            />
           </>
         ))}
       </div>
-      <Footer todos={todos} currentTab={currentTab} />
+      <Footer
+        currentTab={currentTab}
+        setCurrentTab={setCurrentTab}
+        completedTodoExists={completedTodoExists}
+        remainTodosAmount={remainTodosAmount}
+        deleteCompletedTodo={deleteCompletedTodo}
+      />
     </div>
   );
 };
