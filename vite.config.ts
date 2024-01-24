@@ -4,6 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/vite-todo-list/",
   plugins: [react(), tsconfigPaths()],
   server: {
     host: "localhost",
