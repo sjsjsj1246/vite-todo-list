@@ -3,7 +3,11 @@ import TodoItem from "./TodoItem";
 import Footer from "./footer";
 import useTodoList from "./useTodoList";
 
-const TodoList = () => {
+interface TodoListProps {
+  id: string;
+}
+
+const TodoList = ({ id }: TodoListProps) => {
   const {
     state: {
       completedTodoExists,
@@ -20,21 +24,20 @@ const TodoList = () => {
       toggleTodo,
       toggleTodoAll,
     },
-  } = useTodoList();
+  } = useTodoList(id);
 
   return (
     <div className="w-[600px] max-h-[calc(100vh-200px)] flex flex-col bg-white rounded-lg drop-shadow-md">
       <Header addTodo={addTodo} toggleTodoAll={toggleTodoAll} />
       <div className="h-full overflow-y-auto">
-        {filteredTodos.map((todo) => (
-          <>
-            <TodoItem
-              todo={todo}
-              toggleTodo={toggleTodo}
-              editTodo={editTodo}
-              deleteTodo={deleteTodo}
-            />
-          </>
+        {filteredTodos?.map((todo) => (
+          <TodoItem
+            key={todo.id}
+            todo={todo}
+            toggleTodo={toggleTodo}
+            editTodo={editTodo}
+            deleteTodo={deleteTodo}
+          />
         ))}
       </div>
       <Footer

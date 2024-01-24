@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface Todo {
   id: string;
@@ -8,25 +8,25 @@ export interface Todo {
 
 export type TabState = "All" | "Active" | "Completed";
 
-const useTodoList = () => {
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: "1",
-      content: "Todo 1",
-      completed: false,
-    },
-    {
-      id: "2",
-      content: "Todo 2",
-      completed: true,
-    },
-    {
-      id: "3",
-      content: "Todo 3",
-      completed: false,
-    },
-  ]);
+const useTodoList = (id: string) => {
+  const [todos, setTodos] = useState<Todo[]>([]);
   const [currentTab, setCurrentTab] = useState<TabState>("All");
+
+  useEffect(() => {
+    const savedData = localStorage.getItem(`todo-list-${id}`);
+    if (savedData) {
+      const { todos, currentTab } = JSON.parse(savedData);
+      setTodos(todos);
+      setCurrentTab(currentTab);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      `todo-list-${id}`,
+      JSON.stringify({ todos, currentTab })
+    );
+  }, [todos, currentTab, id]);
 
   const filteredTodos = todos.filter((todo) => {
     if (currentTab === "All") {

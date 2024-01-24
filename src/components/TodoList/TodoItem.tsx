@@ -23,12 +23,14 @@ const TodoItem = ({
 
   const handleKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      if (e.nativeEvent.isComposing) return;
       const target = e.currentTarget;
       const content = target.value.trim();
       if (content) {
         editTodo(todo.id, content);
         target.value = "";
       }
+      setEditMode(false);
     }
   };
 
@@ -65,7 +67,9 @@ const TodoItem = ({
           className={`flex-1 text-lg ${
             todo.completed ? "text-stone-400 line-through" : "text-stone-600"
           }`}
+          defaultValue={todo.content}
           onKeyDown={handleKeydown}
+          autoFocus
         />
       ) : (
         <p

@@ -8,6 +8,7 @@ interface HeaderProps {
 const Header = ({ addTodo, toggleTodoAll }: HeaderProps) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      if (e.nativeEvent.isComposing) return;
       const target = e.currentTarget;
       const content = target.value.trim();
       if (content) {
