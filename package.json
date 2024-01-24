@@ -1,6 +1,7 @@
 {
   "name": "todo-list",
   "owner": "sjsjsj1246",
+  "homepage": "https://sjsjsj1246.github.io/vite-todo-list",
   "private": true,
   "version": "1.0.0",
   "type": "module",
