@@ -1,6 +1,4 @@
-import TodoList from "@components/TodoList";
-
-const TODO_LIST_ID = "1vfa782";
+import TodoList from "@components/todo-list";
 
 function App() {
   return (
@@ -8,7 +6,7 @@ function App() {
       <h1 className="font-serif font-light text-6xl mt-8 text-stone-400">
         todos
       </h1>
-      <TodoList id={TODO_LIST_ID} />
+      <TodoList />
     </div>
   );
 }

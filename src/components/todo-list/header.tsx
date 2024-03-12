@@ -1,7 +1,8 @@
 import { FaCheck } from "react-icons/fa";
+import { type Todo } from "./use-todo-list";
 
 interface HeaderProps {
-  addTodo: (content: string) => void;
+  addTodo: ({ content }: Pick<Todo, "content">) => void;
   toggleTodoAll: () => void;
 }
 
@@ -12,7 +13,7 @@ const Header = ({ addTodo, toggleTodoAll }: HeaderProps) => {
       const target = e.currentTarget;
       const content = target.value.trim();
       if (content) {
-        addTodo(content);
+        addTodo({ content });
         target.value = "";
       }
     }

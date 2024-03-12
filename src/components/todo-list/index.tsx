@@ -1,13 +1,9 @@
 import Header from "./header";
-import TodoItem from "./TodoItem";
+import TodoItem from "./todo-item";
 import Footer from "./footer";
-import useTodoList from "./useTodoList";
+import useTodoList from "./use-todo-list";
 
-interface TodoListProps {
-  id: string;
-}
-
-const TodoList = ({ id }: TodoListProps) => {
+const TodoList = () => {
   const {
     state: {
       completedTodoExists,
@@ -24,7 +20,7 @@ const TodoList = ({ id }: TodoListProps) => {
       toggleTodo,
       toggleTodoAll,
     },
-  } = useTodoList(id);
+  } = useTodoList();
 
   return (
     <div className="w-[600px] max-h-[calc(100vh-200px)] flex flex-col bg-white rounded-lg drop-shadow-md">

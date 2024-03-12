@@ -1,12 +1,12 @@
 import { FaRegTrashAlt, FaRegCheckCircle, FaRegCircle } from "react-icons/fa";
-import { type Todo } from "./useTodoList";
+import { type Todo } from "./use-todo-list";
 import { useState } from "react";
 
 interface TodoItemProps {
   todo: Todo;
-  toggleTodo: (id: string) => void;
-  editTodo: (id: string, content: string) => void;
-  deleteTodo: (id: string) => void;
+  toggleTodo: ({ id }: Pick<Todo, "id">) => void;
+  editTodo: ({ id, content }: Pick<Todo, "id" | "content">) => void;
+  deleteTodo: ({ id }: Pick<Todo, "id">) => void;
 }
 
 const TodoItem = ({
@@ -27,7 +27,7 @@ const TodoItem = ({
       const target = e.currentTarget;
       const content = target.value.trim();
       if (content) {
-        editTodo(todo.id, content);
+        editTodo({ id: todo.id, content });
         target.value = "";
       }
       setEditMode(false);
@@ -35,11 +35,11 @@ const TodoItem = ({
   };
 
   const handleClickDeleteButton = () => {
-    deleteTodo(todo.id);
+    deleteTodo({ id: todo.id });
   };
 
   const handleClickToggleButton = () => {
-    toggleTodo(todo.id);
+    toggleTodo({ id: todo.id });
   };
 
   return (

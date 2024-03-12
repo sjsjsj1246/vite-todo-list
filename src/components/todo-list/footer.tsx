@@ -1,10 +1,10 @@
-import { type TabState } from "./useTodoList";
+import { type TabState } from "./use-todo-list";
 
 interface FooterProps {
   currentTab: TabState;
   setCurrentTab: (tab: TabState) => void;
-  completedTodoExists: boolean;
-  remainTodosAmount: number;
+  completedTodoExists: boolean | undefined;
+  remainTodosAmount: number | undefined;
   deleteCompletedTodo: () => void;
 }
 
@@ -18,7 +18,7 @@ const Footer = ({
   return (
     <div className="flex px-4 items-center h-12 justify-center shrink-0 border-t-[1px] border-stone-300">
       <p className="absolute left-4 text-sm text-stone-500">
-        {remainTodosAmount} item left
+        {remainTodosAmount ?? 0} item left
       </p>
       <div className="flex gap-4">
         {(["All", "Active", "Completed"] as TabState[]).map((tab) => (
