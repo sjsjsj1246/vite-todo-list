@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import * as todoApi from "@libs/api/todo";
+import useOptimisticMutation from "@libs/util/use-optimistic-mutation";
 
 export interface Todo {
   id: string;
@@ -11,7 +12,7 @@ export interface Todo {
 export type TabState = "All" | "Active" | "Completed";
 
 const useTodoList = () => {
-  const quertClient = useQueryClient();
+  const TODOS_QUERY_KEY = ["todos"];
   const { data: todos } = useQuery({
     queryKey: ["todos"],
     queryFn: todoApi.getTodos,
@@ -32,36 +33,70 @@ const useTodoList = () => {
 
   const completedTodoExists = todos?.some((todo) => todo.completed);
 
-  const { mutate: addTodo } = useMutation({
-    mutationFn: ({ content }: Pick<Todo, "content">) => todoApi.addTodo(content),
-    onSuccess: () => quertClient.invalidateQueries({ queryKey: ["todos"] }),
+  const { mutate: addTodo } = useOptimisticMutation<Todo[], Pick<Todo, "content">>({
+    queryKey: TODOS_QUERY_KEY,
+    mutationFn: ({ content }) => todoApi.addTodo(content),
+    updateFn:
+      ({ content }) =>
+      (prev) => {
+        if (prev) {
+          return [
+            ...prev,
+            {
+              id: String(Date.now()),
+              content,
+              completed: false,
+            },
+          ];
+        }
+        return [];
+      },
   });
 
-  const { mutate: editTodo } = useMutation({
-    mutationFn: ({ id, content }: Pick<Todo, "id" | "content">) => todoApi.editTodo(id, content),
-    onSuccess: () => quertClient.invalidateQueries({ queryKey: ["todos"] }),
+  const { mutate: editTodo } = useOptimisticMutation<Todo[], Pick<Todo, "id" | "content">>({
+    queryKey: TODOS_QUERY_KEY,
+    mutationFn: ({ id, content }) => todoApi.editTodo(id, content),
+    updateFn:
+      ({ id, content }) =>
+      (prev) => {
+        const index = prev!.findIndex((todo) => todo.id === id);
+        if (index !== -1) {
+          prev![index].content = content;
+        }
+        return prev;
+      },
   });
 
-  const { mutate: deleteTodo } = useMutation({
-    mutationFn: ({ id }: Pick<Todo, "id">) => todoApi.deleteTodo(id),
-    onSuccess: () => quertClient.invalidateQueries({ queryKey: ["todos"] }),
+  const { mutate: deleteTodo } = useOptimisticMutation<Todo[], Pick<Todo, "id">>({
+    queryKey: TODOS_QUERY_KEY,
+    mutationFn: ({ id }) => todoApi.deleteTodo(id),
+    updateFn:
+      ({ id }) =>
+      (prev) =>
+        prev?.filter((todo) => todo.id !== id),
   });
 
-  const { mutate: deleteCompletedTodo } = useMutation({
+  const { mutate: deleteCompletedTodo } = useOptimisticMutation<Todo[]>({
+    queryKey: TODOS_QUERY_KEY,
     mutationFn: () => {
       if (!todos) return Promise.reject();
 
       return Promise.all(todos.filter((todo) => todo.completed).map((todo) => todoApi.deleteTodo(todo.id)));
     },
-    onSuccess: () => quertClient.invalidateQueries({ queryKey: ["todos"] }),
+    updateFn: () => (prev) => prev?.filter((todo) => !todo.completed),
   });
 
-  const { mutate: toggleTodo } = useMutation({
-    mutationFn: ({ id }: Pick<Todo, "id">) => todoApi.toggleTodo(id),
-    onSuccess: () => quertClient.invalidateQueries({ queryKey: ["todos"] }),
+  const { mutate: toggleTodo } = useOptimisticMutation<Todo[], Pick<Todo, "id">>({
+    queryKey: TODOS_QUERY_KEY,
+    mutationFn: ({ id }) => todoApi.toggleTodo(id),
+    updateFn:
+      ({ id }) =>
+      (prev) =>
+        prev?.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
   });
 
-  const { mutate: toggleTodoAll } = useMutation({
+  const { mutate: toggleTodoAll } = useOptimisticMutation<Todo[]>({
+    queryKey: TODOS_QUERY_KEY,
     mutationFn: () => {
       if (!todos) return Promise.reject();
 
@@ -74,7 +109,16 @@ const useTodoList = () => {
         })
       );
     },
-    onSuccess: () => quertClient.invalidateQueries({ queryKey: ["todos"] }),
+    updateFn: () => (prev) => {
+      if (prev) {
+        const areAllCompleted = prev.every((todo) => todo.completed);
+        return prev.map((todo) => ({
+          ...todo,
+          completed: !areAllCompleted,
+        }));
+      }
+      return [];
+    },
   });
 
   return {

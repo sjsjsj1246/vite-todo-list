@@ -5,21 +5,8 @@ import useTodoList from "./use-todo-list";
 
 const TodoList = () => {
   const {
-    state: {
-      completedTodoExists,
-      currentTab,
-      filteredTodos,
-      remainTodosAmount,
-    },
-    action: {
-      addTodo,
-      deleteCompletedTodo,
-      deleteTodo,
-      editTodo,
-      setCurrentTab,
-      toggleTodo,
-      toggleTodoAll,
-    },
+    state: { completedTodoExists, currentTab, filteredTodos, remainTodosAmount },
+    action: { addTodo, deleteCompletedTodo, deleteTodo, editTodo, setCurrentTab, toggleTodo, toggleTodoAll },
   } = useTodoList();
 
   return (
@@ -27,13 +14,7 @@ const TodoList = () => {
       <Header addTodo={addTodo} toggleTodoAll={toggleTodoAll} />
       <div className="h-full overflow-y-auto">
         {filteredTodos?.map((todo) => (
-          <TodoItem
-            key={todo.id}
-            todo={todo}
-            toggleTodo={toggleTodo}
-            editTodo={editTodo}
-            deleteTodo={deleteTodo}
-          />
+          <TodoItem key={todo.id} todo={todo} toggleTodo={toggleTodo} editTodo={editTodo} deleteTodo={deleteTodo} />
         ))}
       </div>
       <Footer
