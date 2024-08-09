@@ -1,4 +1,4 @@
-import { HttpResponse, HttpResponseResolver, delay } from "msw";
+import { HttpResponse, delay, type HttpResponseResolver } from "msw";
 import { todos } from "./data";
 
 export const getTodos: HttpResponseResolver = async () => {

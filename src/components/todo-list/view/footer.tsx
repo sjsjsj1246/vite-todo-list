@@ -1,4 +1,4 @@
-import { type TabState } from "./use-todo-list";
+import { type TabState } from "../consts";
 
 interface FooterProps {
   currentTab: TabState;

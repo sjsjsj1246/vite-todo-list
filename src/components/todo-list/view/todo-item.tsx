@@ -1,6 +1,6 @@
+import { memo, useState } from "react";
 import { FaRegTrashAlt, FaRegCheckCircle, FaRegCircle } from "react-icons/fa";
-import { type Todo } from "./use-todo-list";
-import { useState } from "react";
+import { type Todo } from "../consts";
 
 interface TodoItemProps {
   todo: Todo;
@@ -9,7 +9,7 @@ interface TodoItemProps {
   deleteTodo: ({ id }: Pick<Todo, "id">) => void;
 }
 
-const TodoItem = ({
+const TodoItem = memo(({
   todo,
   deleteTodo,
   editTodo,
@@ -89,6 +89,6 @@ const TodoItem = ({
       </button>
     </div>
   );
-};
+});
 
 export default TodoItem;

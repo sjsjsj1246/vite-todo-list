@@ -1,4 +1,4 @@
-import { type Todo } from "@components/todo-list/use-todo-list";
+import type { Todo } from "@components/todo-list/consts";
 
 export const todos: Todo[] = [
   {

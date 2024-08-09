@@ -1,5 +1,5 @@
 import { FaCheck } from "react-icons/fa";
-import { type Todo } from "./use-todo-list";
+import { type Todo } from "../consts";
 
 interface HeaderProps {
   addTodo: ({ content }: Pick<Todo, "content">) => void;

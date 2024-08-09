@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as todoApi from "@libs/api/todo";
 import useOptimisticMutation from "@libs/util/use-optimistic-mutation";
-
-export interface Todo {
-  id: string;
-  content: string;
-  completed: boolean;
-}
-
-export type TabState = "All" | "Active" | "Completed";
+import { type Todo, type TabState } from "../consts";
 
 const useTodoList = () => {
   const TODOS_QUERY_KEY = ["todos"];

@@ -1,4 +1,4 @@
-import { type Todo } from "@components/todo-list/use-todo-list";
+import type { Todo } from "@components/todo-list/consts";
 import axios from "axios";
 
 export const getTodos = async () => (await axios.get<Todo[]>("/todo")).data;
