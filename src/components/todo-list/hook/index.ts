@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as todoApi from "@libs/api/todo";
 import useOptimisticMutation from "@libs/util/use-optimistic-mutation";
-import { type Todo, type TabState } from "../consts";
+import { type Todo, type TabState, TAB_STATE } from "../consts";
 
 const useTodoList = () => {
   const TODOS_QUERY_KEY = ["todos"];
@@ -10,7 +10,7 @@ const useTodoList = () => {
     queryKey: ["todos"],
     queryFn: todoApi.getTodos,
   });
-  const [currentTab, setCurrentTab] = useState<TabState>("All");
+  const [currentTab, setCurrentTab] = useState<TabState>(TAB_STATE.ALL);
 
   const filteredTodos = todos?.filter((todo) => {
     if (currentTab === "All") {
@@ -99,7 +99,7 @@ const useTodoList = () => {
         todos.map((todo) => {
           if (areAllCompleted) todoApi.toggleTodo(todo.id);
           else if (!todo.completed) todoApi.toggleTodo(todo.id);
-        })
+        }),
       );
     },
     updateFn: () => (prev) => {

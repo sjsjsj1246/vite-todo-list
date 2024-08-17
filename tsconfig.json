@@ -23,16 +23,14 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./src",
     "paths": {
-      "@components/*": [
-        "components/*"
-      ],
-      "@libs/*": [
-        "libs/*"
-      ]
+      "@components/*": ["components/*"],
+      "@components": ["components"],
+      "@libs/*": ["libs/*"],
+      "@libs": ["libs"]
     }
   },
   "include": [
-    "src"
+    "src",
   ],
   "references": [
     {

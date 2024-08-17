@@ -1,0 +1,36 @@
+name: Vitest Unit Test
+
+on: push
+
+jobs:
+  build:
+    # 우분투 OS에서 실행
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # node 18 환경에서 실행할 것이라고 변수를 설정함.
+        # 아래 actions/setup-node@v3에서 사용됨.
+        node-version: [18.x]
+
+    steps:
+      # workflow가 실행될 때의 소스 코드를 가져오는 작업.
+      # 다른 개발자가 만들어 둔 미리 정의된 action입니다. https://github.com/actions/checkout
+      # git 초기화, fetch, checkout 등을 수행하여 해당 브랜치의 소스 코드를 가져옵니다.
+      - uses: actions/checkout@v3
+      # name을 붙여 해당 작업의 이름을 정의할 수 있습니다.
+      # 실행 환경에서 Node 환경 설정을 돕는 action입니다.
+      # 노드를 다운받고 노드와 의존성을 캐싱해줍니다.
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      # pnpm 설치
+      - name: Install pnpm
+        run: npm install -g pnpm
+      # 의존성 설치
+      - name: npm ci
+        run: pnpm install --frozen-lockfile
+      # 테스트 script 실행
+      - name: vitest
+        run: pnpm test

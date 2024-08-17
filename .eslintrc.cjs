@@ -7,6 +7,7 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:import/recommended",
     "plugin:import/typescript",
+    "plugin:prettier/recommended",
   ],
   ignorePatterns: ["/*", "!/src"],
   parser: "@typescript-eslint/parser",
@@ -40,6 +41,12 @@ module.exports = {
         alphabetize: {
           order: "asc",
         },
+      },
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
       },
     ],
   },

@@ -1,92 +1,109 @@
+import type { Todo } from "@components/todo-list/consts";
 import { HttpResponse, delay, type HttpResponseResolver } from "msw";
-import { todos } from "./data";
 
-export const getTodos: HttpResponseResolver = async () => {
-  await delay(200);
-  return HttpResponse.json(todos, { status: 200 });
-};
+interface TodoServiceConfig {
+  todos?: Todo[];
+  delayAmount?: number;
+}
 
-export const getTodo: HttpResponseResolver = async ({ params }) => {
-  try {
-    const { id } = params;
+class TodoService {
+  private _delayAmount: number;
+  private _todos: Todo[];
 
-    await delay(200);
-    return HttpResponse.json(
-      todos.find((todo) => todo.id === id),
-      { status: 200 }
-    );
-  } catch (e) {
-    let message = "Unknown Error";
-    if (e instanceof Error) message = e.message;
-    return HttpResponse.json({ message }, { status: 400 });
+  constructor({ todos = [], delayAmount = 200 }: TodoServiceConfig) {
+    this._todos = todos;
+    this._delayAmount = delayAmount;
   }
-};
 
-export const addTodo: HttpResponseResolver = async ({ request }) => {
-  try {
-    const { content } = (await request.json()) as { content: string };
+  getTodos: HttpResponseResolver = async () => {
+    await delay(this._delayAmount);
+    return HttpResponse.json(this._todos, { status: 200 });
+  };
 
-    const newTodo = {
-      id: String(todos.length + 1),
-      content,
-      completed: false,
-    };
-    todos.push(newTodo);
+  getTodo: HttpResponseResolver = async ({ params }) => {
+    try {
+      const { id } = params;
 
-    await delay(200);
-    return HttpResponse.json(newTodo, { status: 201 });
-  } catch (e) {
-    let message = "Unknown Error";
-    if (e instanceof Error) message = e.message;
-    return HttpResponse.json({ message }, { status: 400 });
-  }
-};
+      await delay(this._delayAmount);
+      return HttpResponse.json(
+        this._todos.find((todo) => todo.id === id),
+        { status: 200 },
+      );
+    } catch (e) {
+      let message = "Unknown Error";
+      if (e instanceof Error) message = e.message;
+      return HttpResponse.json({ message }, { status: 400 });
+    }
+  };
 
-export const editTodo: HttpResponseResolver = async ({ request, params }) => {
-  try {
-    const { id } = params;
-    const { content } = (await request.json()) as { content: string };
+  addTodo: HttpResponseResolver = async ({ request }) => {
+    try {
+      const { content } = (await request.json()) as { content: string };
 
-    const index = todos.findIndex((todo) => todo.id === id);
-    todos[index].content = content;
+      const newTodo = {
+        id: String(this._todos.length + 1),
+        content,
+        completed: false,
+      };
+      this._todos.push(newTodo);
 
-    await delay(200);
-    return HttpResponse.json(todos[index], { status: 200 });
-  } catch (e) {
-    let message = "Unknown Error";
-    if (e instanceof Error) message = e.message;
-    return HttpResponse.json({ message }, { status: 400 });
-  }
-};
+      await delay(this._delayAmount);
+      return HttpResponse.json(newTodo, { status: 201 });
+    } catch (e) {
+      let message = "Unknown Error";
+      if (e instanceof Error) message = e.message;
+      return HttpResponse.json({ message }, { status: 400 });
+    }
+  };
 
-export const toggleTodo: HttpResponseResolver = async ({ params }) => {
-  try {
-    const { id } = params;
+  editTodo: HttpResponseResolver = async ({ request, params }) => {
+    try {
+      const { id } = params;
+      const { content } = (await request.json()) as { content: string };
 
-    const index = todos.findIndex((todo) => todo.id === id);
-    todos[index].completed = !todos[index].completed;
+      const index = this._todos.findIndex((todo) => todo.id === id);
+      this._todos[index].content = content;
 
-    await delay(200);
-    return HttpResponse.json(todos[index], { status: 200 });
-  } catch (e) {
-    let message = "Unknown Error";
-    if (e instanceof Error) message = e.message;
-    return HttpResponse.json({ message }, { status: 400 });
-  }
-};
+      await delay(this._delayAmount);
+      return HttpResponse.json(this._todos[index], { status: 200 });
+    } catch (e) {
+      let message = "Unknown Error";
+      if (e instanceof Error) message = e.message;
+      return HttpResponse.json({ message }, { status: 400 });
+    }
+  };
 
-export const deleteTodo: HttpResponseResolver = async ({ params }) => {
-  try {
-    const { id } = params;
+  toggleTodo: HttpResponseResolver = async ({ params }) => {
+    try {
+      const { id } = params;
 
-    const index = todos.findIndex((todo) => todo.id === id);
-    todos.splice(index, 1);
+      const index = this._todos.findIndex((todo) => todo.id === id);
+      this._todos[index].completed = !this._todos[index].completed;
 
-    await delay(200);
-    return HttpResponse.json({ status: 200 });
-  } catch (e) {
-    let message = "Unknown Error";
-    if (e instanceof Error) message = e.message;
-    return HttpResponse.json({ message }, { status: 400 });
-  }
-};
+      await delay(this._delayAmount);
+      return HttpResponse.json(this._todos[index], { status: 200 });
+    } catch (e) {
+      let message = "Unknown Error";
+      if (e instanceof Error) message = e.message;
+      return HttpResponse.json({ message }, { status: 400 });
+    }
+  };
+
+  deleteTodo: HttpResponseResolver = async ({ params }) => {
+    try {
+      const { id } = params;
+
+      const index = this._todos.findIndex((todo) => todo.id === id);
+      this._todos.splice(index, 1);
+
+      await delay(this._delayAmount);
+      return HttpResponse.json({ status: 200 });
+    } catch (e) {
+      let message = "Unknown Error";
+      if (e instanceof Error) message = e.message;
+      return HttpResponse.json({ message }, { status: 400 });
+    }
+  };
+}
+
+export default TodoService;

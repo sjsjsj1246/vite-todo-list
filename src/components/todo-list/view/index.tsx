@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import useTodoList from "../hook";
 import Footer from "./footer";
 import Header from "./header";
@@ -12,7 +12,7 @@ const TodoList = () => {
 
   const todoLength = useRef(0);
   useEffect(() => {
-    if(todoLength.current < (filteredTodos?.length ?? 0)) {
+    if (todoLength.current < (filteredTodos?.length ?? 0)) {
       const scrollBottom = document.getElementById("scroll-bottom");
       scrollBottom?.scrollIntoView({ behavior: "smooth" });
     }
@@ -23,9 +23,7 @@ const TodoList = () => {
     <div className="w-[600px] max-h-[calc(100vh-200px)] flex flex-col bg-white rounded-lg drop-shadow-md">
       <Header addTodo={addTodo} toggleTodoAll={toggleTodoAll} />
       <div className="h-full overflow-y-auto">
-        {filteredTodos?.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} toggleTodo={toggleTodo} editTodo={editTodo} deleteTodo={deleteTodo} />
-        ))}
+        {filteredTodos?.map((todo) => <TodoItem key={todo.id} todo={todo} toggleTodo={toggleTodo} editTodo={editTodo} deleteTodo={deleteTodo} />)}
         <div id="scroll-bottom" />
       </div>
       <Footer
@@ -39,4 +37,4 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+export default memo(TodoList);
