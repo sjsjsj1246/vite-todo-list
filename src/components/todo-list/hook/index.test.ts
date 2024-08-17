@@ -18,7 +18,7 @@ describe("todo-list > hook", () => {
     // Then
     await waitFor(() => {
       const { todos } = result.current.state;
-      expect(todos![todos!.length - 1].content).toBe(newContent);
+      expect(todos![todos!.length - 1].content).toBe("일부러 테스트에서 에러를 내봅니다.");
     });
   });
 
